@@ -111,7 +111,7 @@ var path = d3.geoPath().projection(projection);
 //svg.call(tip);
 
 queue()
-    .defer(d3.json, "https://unpkg.com/world-atlas@1/world/110m.json")
+    .defer(d3.json, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/map/world_countries.json")
     .defer(d3.tsv, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/popdata/blood_type_data.tsv")
     .await(ready);
 
