@@ -71,7 +71,7 @@
 <body>
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src="https://d3js.org/queue.v1.js"></script>
-<script src="https://d3js.org/topojson.v1.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
 <!-- <script src="d3-tip.js"></script> -->
 <script>
 
@@ -111,7 +111,7 @@ var path = d3.geoPath().projection(projection);
 //svg.call(tip);
 
 queue()
-    .defer(d3.json, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/map/world_countries.json")
+    .defer(d3.json, "https://unpkg.com/world-atlas@1/world/110m.json")
     .defer(d3.tsv, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/popdata/blood_type_data.tsv")
     .await(ready);
 
@@ -124,7 +124,7 @@ function ready(error, data, blood_types) {
     svg.append("g")
             .attr("class", "countries")
         .selectAll("path")
-            .data(data.objects.countries.geometries)
+            .data(topojson.feature(data, data.objects.countries).features)
         .enter()
             .append("path")
             .attr("d", path)
