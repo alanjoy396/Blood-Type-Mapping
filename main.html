@@ -120,10 +120,16 @@ queue()
     //.defer(d3.tsv, "world_blood_types.tsv")
     .await(ready);
 
-function ready(error, data, population) {
+function ready(error, data, blood_types) {
+    var blood_typesByID = {};
+
+    blood_typesByID.forEach(function(d) {blood_typesByID[d.id] = +d.blood_types;});
+    data.features.forEach(function(d) {d.blood_types = blood_typesByID[d.id]})
+    
+    data.features.foEac
     svg.append("g")
-            .attr("class", "countries");
-    svg.selectAll("path")
+            .attr("class", "countries")
+        .selectAll("path")
             .data(data.features)
         .enter().append("path")
             .attr("d", path)
