@@ -67,11 +67,6 @@
     .details{
       color:white;
     }
-    svg {
-        width:100%;
-        height:500px;
-        margin:0px auto;
-    }
 </style>
 <body>
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -117,16 +112,16 @@ var path = d3.geoPath().projection(projection);
 
 queue()
     .defer(d3.json, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/map/world_countries.json")
-    //.defer(d3.tsv, "world_blood_types.tsv")
+    .defer(d3.csv, "world_blood_types.tsv")
     .await(ready);
 
 function ready(error, data, blood_types) {
-    var blood_typesByID = {};
+    var blood_typesByID = [];
+    data.features = [];
 
     blood_typesByID.forEach(function(d) {blood_typesByID[d.id] = +d.blood_types;});
     data.features.forEach(function(d) {d.blood_types = blood_typesByID[d.id]})
-    
-    data.features.foEac
+
     svg.append("g")
             .attr("class", "countries")
         .selectAll("path")
@@ -137,7 +132,27 @@ function ready(error, data, blood_types) {
             .style('stroke', 'white')
             .style('stroke-width', 1.5)
             .style("opacity",0.8)
+                .style("stroke", "white")
+                .style("stroke-width", 0.3)
+                .on('mouseover', function(d) {
+                    d3.select(this)
+                        .style("opacity", 1)
+                        .style("stroke", "white")
+                        .style("stroke-width", 3);
+                })
+                .on('mouseout', function(d){
+                    d3.select(this)
+                        .style("opacity", 0.8)
+                        .style("stroke", "white")
+                        .style("stroke-width", 0.3);
+                });
+
+svg.append("path")
+    .datum(topojson.mesh(data.features, function(a, b) {return a.id != b.id; }))
+    .attr("class", "names")
+    .attr("d", path);
 }
+
 
 
 function tipStats(country){
