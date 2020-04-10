@@ -71,7 +71,8 @@
 <body>
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src="https://d3js.org/queue.v1.js"></script>
-<script src="https://unpkg.com/topojson-client@3"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 <!-- <script src="d3-tip.js"></script> -->
 <script>
 
@@ -90,7 +91,7 @@ var tip = d3.tip()
 
 var margin = {top: 0, right: 0, bottom: 0, left: 0},
     width = 960 - margin.left - margin.right,
-    height = 960 - margin.top - margin.bottom;
+    height = 600 - margin.top - margin.bottom;
 
 var color = d3.scaleSequential(d3.interpolateReds);
 
@@ -118,8 +119,18 @@ queue()
 function ready(error, data, blood_types) {
     var blood_typesByID = [];
 
-    blood_typesByID.forEach(function(d) {blood_typesByID[d.id] = +d.blood_types;});
-    data.objects.countries.geometries.forEach(function(d) {d.blood_types = blood_typesByID[d.id]})
+    blood_types.forEach(function(d){
+    data.objects.countries.geometries.filter(obj => {return obj.id === d.id}).blood_types = {
+            Apos:d["A+"],
+            Aneg:d["A-"],
+            Bpos:d["B+"],
+            Bneg:d["B-"],
+            ABpos:d["AB+"],
+            ABneg:d["AB-"],
+            Opos:d["O+"],
+            Oneg:d["O-"]
+        };
+    });
 
     svg.append("g")
             .attr("class", "countries")
@@ -128,7 +139,7 @@ function ready(error, data, blood_types) {
         .enter()
             .append("path")
             .attr("d", path)
-            .style("fill", function(d) {return color(d); })
+            .style("fill", function(d) {console.log(d); return color(d.id);})
             .style('stroke', 'white')
             .style('stroke-width', 1.5)
             .style("opacity",0.8)
@@ -148,7 +159,7 @@ function ready(error, data, blood_types) {
                 });
 
 svg.append("path")
-    .datum(topojson.mesh(data.features, function(a, b) {return a.id != b.id; }))
+    .datum(topojson.mesh(topojson.feature(data, data.objects.countries).features, function(a, b) {return a.id != b.id; }))
     .attr("class", "names")
     .attr("d", path);
 }
@@ -158,20 +169,20 @@ svg.append("path")
 function tipStats(country){
     var str = "<strong>" + country.properties.name + ": </strong><br>";
     if (!rh){
-        str += "<strong> A: </strong>" + country.properties.Apos + country.properties.Aneg + "<br>";
-        str += "<strong> B: </strong>" + country.properties.Bpos + country.properties.Bneg + "<br>";
-        str += "<strong> AB: </strong>" + country.properties.ABpos + country.properties.ABneg + "<br>";
-        str += "<strong> O: </strong>" + country.properties.Opos + country.properties.Oneg + "<br>";
+        str += "<strong> A: </strong>" + country.blood_types.Apos + country.blood_types.Aneg + "<br>";
+        str += "<strong> B: </strong>" + country.blood_types.Bpos + country.blood_types.Bneg + "<br>";
+        str += "<strong> AB: </strong>" + country.blood_types.ABpos + country.blood_types.ABneg + "<br>";
+        str += "<strong> O: </strong>" + country.blood_types.Opos + country.blood_types.Oneg + "<br>";
     }
     else {
-        str += "<strong> A+: </strong>" + country.properties.Apos + "<br>";
-        str += "<strong> A-: </strong>" + country.properties.Aneg + "<br>";
-        str += "<strong> B+: </strong>" + country.properties.Bpos + "<br>";
-        str += "<strong> B-: </strong>" + country.properties.Bneg + "<br>";
-        str += "<strong> AB+: </strong>" + country.properties.ABpos + "<br>";
-        str += "<strong> AB-: </strong>" + country.properties.ABneg + "<br>";
-        str += "<strong> O+: </strong>" + country.properties.Opos + "<br>";
-        str += "<strong> O-: </strong>" + country.properties.Oneg + "<br>";
+        str += "<strong> A+: </strong>" + country.blood_types.Apos + "<br>";
+        str += "<strong> A-: </strong>" + country.blood_types.Aneg + "<br>";
+        str += "<strong> B+: </strong>" + country.blood_types.Bpos + "<br>";
+        str += "<strong> B-: </strong>" + country.blood_types.Bneg + "<br>";
+        str += "<strong> AB+: </strong>" + country.blood_types.ABpos + "<br>";
+        str += "<strong> AB-: </strong>" + country.blood_types.ABneg + "<br>";
+        str += "<strong> O+: </strong>" + country.blood_types.Opos + "<br>";
+        str += "<strong> O-: </strong>" + country.blood_types.Oneg + "<br>";
     }
 
 }
