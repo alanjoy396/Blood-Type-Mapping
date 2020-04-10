@@ -67,18 +67,22 @@
     .details{
       color:white;
     }
-
+    svg {
+        width:100%;
+        height:500px;
+        margin:0px auto;
+    }
 </style>
 <body>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/queue.v1.min.js"></script>
 <script src="https://d3js.org/topojson.v1.min.js"></script>
-<!-- <script src="d3-tip.js"></script> -->
+<script src="d3-tip.js"></script>
 <script>
 
 var rh = false; // by default, rh values are preferred not to be shown
 
-var format = d3.format(",");
+// var format = d3.format(",");
 
 /*
 var tip = d3.tip()
@@ -112,28 +116,45 @@ var path = d3.geoPath().projection(projection);
 //svg.call(tip);
 
 queue()
-    .defer(d3.json, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/map/world_countries.json?token=ALDBHJ7X7R4UR56COFZRD6S6R66HI")
+    .defer(d3.json, "world_countries.json")
     //.defer(d3.tsv, "world_blood_types.tsv")
     .await(ready);
 
-function ready(error, data, blood_types){
+function ready(error, data, population) {
     svg.append("g")
-            .attr("class", "countries")
-        .selectAll("path")
+            .attr("class", "countries");
+    svg.selectAll("path")
             .data(data.features)
-        .enter()
-        .append("path")
+        .enter().append("path")
             .attr("d", path)
-            .style("fill", function(d) {return color(d.name); })
+            .style("fill", function(d) {return color(d); })
             .style('stroke', 'white')
             .style('stroke-width', 1.5)
-            .style("opacity", 0.8);
-
-    svg.append("path")
-        .datum(topojson.mesh(data.features, function(a, b) {return a.id !== b.id; }))
-        .attr("class", "names")
-        .attr("d", path);
+            .style("opacity",0.8)
 }
+
+
+function tipStats(country){
+    var str = "<strong>" + country.properties.name + ": </strong><br>";
+    if (!rh){
+        str += "<strong> A: </strong>" + country.properties.Apos + country.properties.Aneg + "<br>";
+        str += "<strong> B: </strong>" + country.properties.Bpos + country.properties.Bneg + "<br>";
+        str += "<strong> AB: </strong>" + country.properties.ABpos + country.properties.ABneg + "<br>";
+        str += "<strong> O: </strong>" + country.properties.Opos + country.properties.Oneg + "<br>";
+    }
+    else {
+        str += "<strong> A+: </strong>" + country.properties.Apos + "<br>";
+        str += "<strong> A-: </strong>" + country.properties.Aneg + "<br>";
+        str += "<strong> B+: </strong>" + country.properties.Bpos + "<br>";
+        str += "<strong> B-: </strong>" + country.properties.Bneg + "<br>";
+        str += "<strong> AB+: </strong>" + country.properties.ABpos + "<br>";
+        str += "<strong> AB-: </strong>" + country.properties.ABneg + "<br>";
+        str += "<strong> O+: </strong>" + country.properties.Opos + "<br>";
+        str += "<strong> O-: </strong>" + country.properties.Oneg + "<br>";
+    }
+
+}
+
 
 </script>
 </body>
