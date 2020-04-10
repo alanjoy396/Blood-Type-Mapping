@@ -69,9 +69,9 @@
     }
 </style>
 <body>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://d3js.org/queue.v1.min.js"></script>
-<script src="https://d3js.org/topojson.v1.min.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://d3js.org/queue.v1.js"></script>
+<script src="https://d3js.org/topojson.v1.js"></script>
 <!-- <script src="d3-tip.js"></script> -->
 <script>
 
@@ -112,21 +112,21 @@ var path = d3.geoPath().projection(projection);
 
 queue()
     .defer(d3.json, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/map/world_countries.json")
-    .defer(d3.tsv, "world_blood_types.tsv")
+    .defer(d3.tsv, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/popdata/blood_type_data.tsv")
     .await(ready);
 
 function ready(error, data, blood_types) {
     var blood_typesByID = [];
-    data.features = [];
 
     blood_typesByID.forEach(function(d) {blood_typesByID[d.id] = +d.blood_types;});
-    data.features.forEach(function(d) {d.blood_types = blood_typesByID[d.id]})
+    data.objects.countries.geometries.forEach(function(d) {d.blood_types = blood_typesByID[d.id]})
 
     svg.append("g")
             .attr("class", "countries")
         .selectAll("path")
-            .data(data.features)
-        .enter().append("path")
+            .data(data.objects.countries.geometries)
+        .enter()
+            .append("path")
             .attr("d", path)
             .style("fill", function(d) {return color(d); })
             .style('stroke', 'white')
