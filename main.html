@@ -145,14 +145,16 @@ function ready(error, data, blood_types) {
             .attr("d", path)
             .style("fill", function(d) {
                 let country = data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
-                if (country[0])
+                if (country[0]){
+                    console.log(country[0]);
                     if (country[0].blood_types) {
-                        console.log(country[0]);
+
                         return color(country[0].blood_types.Apos / 100);
                     }
                     else {
                         return d3.color("black");
                     }
+                }
                 else {
                     return d3.color("steelblue");
                 }
