@@ -113,7 +113,7 @@ var path = d3.geoPath().projection(projection);
 
 queue()
     .defer(d3.json, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/map/world_countries.json")
-    .defer(d3.tsv, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/popdata/blood_type_data.tsv")
+    .defer(d3.csv, "https://raw.githubusercontent.com/alanjoy396/Blood-Type-Mapping/master/data/popdata/PopData%20-%20Sheet1.csv")
     .await(ready);
 
 function ready(error, data, blood_types) {
