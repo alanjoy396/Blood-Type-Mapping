@@ -119,7 +119,6 @@ queue()
 function ready(error, data, blood_types) {
     var blood_typesByID = [];
 
-    console.log(blood_types.filter(obj=>obj["id"]==32));
     for (var i = 0; i < data.objects.countries.geometries.length; i++){
         var d = data.objects.countries.geometries[i];
         var j = blood_types.filter(obj=>obj["id"]==d.id);
@@ -148,7 +147,8 @@ function ready(error, data, blood_types) {
                 let country = data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
                 if (country[0])
                     if (country[0].blood_types) {
-                        return color(country[0].blood_types.Apos);
+                        console.log(country[0]);
+                        return color(country[0].blood_types.Apos / 100);
                     }
                     else {
                         return d3.color("black");
