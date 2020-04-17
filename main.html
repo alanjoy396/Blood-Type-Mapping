@@ -120,7 +120,7 @@ function ready(error, data, blood_types) {
     var blood_typesByID = [];
 
     blood_types.forEach(function(d){
-    data.objects.countries.geometries.filter(obj => {return obj.id === d.id}).blood_types = {
+        data.objects.countries.geometries.filter(obj => {return obj.id === d.id}).blood_types = {
             Apos:d["A+"],
             Aneg:d["A-"],
             Bpos:d["B+"],
