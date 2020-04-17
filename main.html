@@ -119,18 +119,23 @@ queue()
 function ready(error, data, blood_types) {
     var blood_typesByID = [];
 
-    blood_types.forEach(function(d){
-        data.objects.countries.geometries.filter(obj => {return obj.id === d.id}).blood_types = {
-            Apos:d["A+"],
-            Aneg:d["A-"],
-            Bpos:d["B+"],
-            Bneg:d["B-"],
-            ABpos:d["AB+"],
-            ABneg:d["AB-"],
-            Opos:d["O+"],
-            Oneg:d["O-"]
-        };
-    });
+    console.log(blood_types.filter(obj=>obj["id"]==32));
+    for (var i = 0; i < data.objects.countries.geometries.length; i++){
+        var d = data.objects.countries.geometries[i];
+        var j = blood_types.filter(obj=>obj["id"]==d.id);
+        if (j[0]){
+            d.blood_types = {
+                Apos: j[0]['A+'],
+                Aneg: j[0]['A-'],
+                Bpos: j[0]['B+'],
+                Bneg: j[0]['B-'],
+                ABpos: j[0]['AB+'],
+                ABneg: j[0]['AB-'],
+                Opos: j[0]['O+'],
+                Oneg: j[0]['O-']
+            };
+        }
+    }
 
     svg.append("g")
             .attr("class", "countries")
@@ -139,7 +144,19 @@ function ready(error, data, blood_types) {
         .enter()
             .append("path")
             .attr("d", path)
-            .style("fill", function(d) {console.log(d); return color(d.id);})
+            .style("fill", function(d) {
+                let country = data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
+                if (country[0])
+                    if (country[0].blood_types) {
+                        return color(country[0].blood_types.Apos);
+                    }
+                    else {
+                        return d3.color("black");
+                    }
+                else {
+                    return d3.color("steelblue");
+                }
+            })
             .style('stroke', 'white')
             .style('stroke-width', 1.5)
             .style("opacity",0.8)
