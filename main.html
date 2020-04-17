@@ -149,10 +149,10 @@ function ready(error, data, blood_types) {
                     console.log(country[0]);
                     if (country[0].blood_types) {
 
-                        return color(country[0].blood_types["Apos"] / 100);
+                        return color(country[0].blood_types["Opos"] / 100);
                     }
                     else {
-                        return d3.color("steelblue");
+                        return d3.color("gray");
                     }
                 }
                 else {
