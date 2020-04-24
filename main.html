@@ -226,8 +226,8 @@ function changeBloodType(type){
       if (countryy[index]){
         if (countryy[index].blood_types) {
           if(countryy[index].blood_types[blood_types[type]] > max){
+            console.log(countryy[index].blood_types[blood_types[type]] +" is greater than "+ max);
             max = countryy[index].blood_types[blood_types[type]];
-            console.log(max);
           }
         }
       }
