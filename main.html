@@ -142,22 +142,54 @@ function load_data(error, data, blood_types){
     var blood_typesByID = [];
 
     for (var i = 0; i < data.objects.countries.geometries.length; i++){
-        var d = data.objects.countries.geometries[i];
-        var j = blood_types.filter(obj=>obj["id"]==d.id);
-        if (j[0]){
-            d.blood_types = {
-                Apos: j[0]['A+'],
-                Aneg: j[0]['A-'],
-                Bpos: j[0]['B+'],
-                Bneg: j[0]['B-'],
-                ABpos: j[0]['AB+'],
-                ABneg: j[0]['AB-'],
-                Opos: j[0]['O+'],
-                Oneg: j[0]['O-']
+        var thisCountry = data.objects.countries.geometries[i];
+        var b_types = blood_types.filter(obj=>obj["id"]==thisCountry.id);
+        if (b_types[0]){
+            thisCountry.blood_types = {
+                Apos: b_types[0]['A+'],
+                Aneg: b_types[0]['A-'],
+                Bpos: b_types[0]['B+'],
+                Bneg: b_types[0]['B-'],
+                ABpos: b_types[0]['AB+'],
+                ABneg: b_types[0]['AB-'],
+                Opos: b_types[0]['O+'],
+                Oneg: b_types[0]['O-']
             };
         }
     }
 
+
+    // this part calculates the maxes for each blood type so that it can color things in a more
+    // meaningful way later on.
+    let bloodTypes = ["Apos", "Aneg",
+                    "Bpos", "Bneg",
+                    "ABpos", "ABneg",
+                    "Opos", "Oneg"];
+
+    var allCountries = data.objects.countries.geometries.filter(obj => {return obj.id});
+    allCountries.max = {
+      Apos: -0.1,
+      Aneg: -0.1,
+      Bpos: -0.1,
+      Bneg: -0.1,
+      ABpos: -0.1,
+      ABneg: -0.1,
+      Opos: -0.1,
+      Oneg: -0.1,
+    };
+    for (index = 0; index < allCountries.length; index++) {
+      if (allCountries[index]){
+        if (allCountries[index].blood_types) {
+          for (i = 0; i < bloodTypes.length; i++){
+              if (allCountries[index].blood_types[bloodTypes[i]]*1.0 > allCountries.max[bloodTypes[i]]){
+                allCountries.max[bloodTypes[i]] = allCountries[index].blood_types[bloodTypes[i]];
+              }
+          }
+        }
+      }
+    }
+
+    data.objects.countries.geometries.max = allCountries.max;
     country_data = data;
     ready(country_data);
 }
@@ -173,10 +205,10 @@ function ready(country_data) {
             .attr("d", path)
             .style("fill", function(d) {
                 let country = country_data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
+                let allCountries = country_data.objects.countries.geometries;
                 if (country[0]){
                     if (country[0].blood_types) {
-
-                        return color(country[0].blood_types["Apos"] / 100);
+                        return color((country[0].blood_types["Apos"]*1.0) / (allCountries.max["Apos"]*1.0));
                     }
                     else {
                         return d3.color("gray");
@@ -216,29 +248,15 @@ function changeBloodType(type){
                         "ABpos", "ABneg",
                         "Opos", "Oneg"];
 
-
-    var max = -0.1;
-    let countryy = country_data.objects.countries.geometries.filter(obj => {return obj.id});
-    for (index = 0; index < countryy.length; index++) {
-      if (countryy[index]){
-        if (countryy[index].blood_types) {
-          if(countryy[index].blood_types[blood_types[type]]*1.0 > max){
-            max = countryy[index].blood_types[blood_types[type]];
-          }
-        }
-      }
-    }
-
-
     d3.selectAll("path")
     .transition()
     .duration(100)
     .style("fill", function(d) {
         let country = country_data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
+        let allCountries = country_data.objects.countries.geometries;
         if (country[0]){
             if (country[0].blood_types) {
-
-                return color(country[0].blood_types[blood_types[type]] / max);
+                return color(country[0].blood_types[blood_types[type]] / allCountries.max[blood_types[type]]);
             }
             else {
                 return d3.color("gray");
