@@ -217,15 +217,33 @@ function changeBloodType(type){
                         "ABpos", "ABneg",
                         "Opos", "Oneg"];
 
+
+    var max = -0.1;
+    console.log("-------------");
+    console.log(blood_types[type]+"\n");
+    let countryy = country_data.objects.countries.geometries.filter(obj => {return obj.id});
+    for (index = 0; index < countryy.length; index++) {
+      if (countryy[index]){
+        if (countryy[index].blood_types) {
+          if(countryy[index].blood_types[blood_types[type]] > max){
+            max = countryy[index].blood_types[blood_types[type]];
+            console.log(max);
+          }
+        }
+      }
+    }
+    console.log("Final Value: " + max);
+    console.log("-------------");
+
     d3.selectAll("path")
     .transition()
-    .duration(2000)
+    .duration(100)
     .style("fill", function(d) {
         let country = country_data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
         if (country[0]){
             if (country[0].blood_types) {
 
-                return color(country[0].blood_types[blood_types[type]] / 100);
+                return color(country[0].blood_types[blood_types[type]] / max);
             }
             else {
                 return d3.color("gray");
