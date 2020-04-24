@@ -219,21 +219,17 @@ function changeBloodType(type){
 
 
     var max = -0.1;
-    console.log("-------------");
-    console.log(blood_types[type]+"\n");
     let countryy = country_data.objects.countries.geometries.filter(obj => {return obj.id});
     for (index = 0; index < countryy.length; index++) {
       if (countryy[index]){
         if (countryy[index].blood_types) {
-          if(countryy[index].blood_types[blood_types[type]] > max){
-            console.log(countryy[index].blood_types[blood_types[type]] +" is greater than "+ max);
+          if(countryy[index].blood_types[blood_types[type]]*1.0 > max){
             max = countryy[index].blood_types[blood_types[type]];
           }
         }
       }
     }
-    console.log("Final Value: " + max);
-    console.log("-------------");
+
 
     d3.selectAll("path")
     .transition()
