@@ -92,7 +92,11 @@
 <button onclick="changeBloodType(5)">AB-</button>
 <button onclick="changeBloodType(6)">O+</button>
 <button onclick="changeBloodType(7)">O-</button>
-
+<button onclick="changeBloodType(8)">A</button>
+<button onclick="changeBloodType(9)">B</button>
+<button onclick="changeBloodType(10)">AB</button>
+<button onclick="changeBloodType(11)">O</button>
+<button onclick="DisplayMax()">MAX</button>
 <script>
 
 var rh = false; // by default, rh values are preferred not to be shown
@@ -153,7 +157,11 @@ function load_data(error, data, blood_types){
                 ABpos: b_types[0]['AB+'],
                 ABneg: b_types[0]['AB-'],
                 Opos: b_types[0]['O+'],
-                Oneg: b_types[0]['O-']
+                Oneg: b_types[0]['O-'],
+                Aboth: b_types[0]['A+']*1.0+b_types[0]['A-']*1.0,
+                Bboth: b_types[0]['B+']*1.0+b_types[0]['B-']*1.0,
+                ABboth: b_types[0]['B+']*1.0+b_types[0]['AB-']*1.0,
+                Oboth: b_types[0]['O+']*1.0+b_types[0]['O-']*1.0
             };
         }
     }
@@ -162,20 +170,26 @@ function load_data(error, data, blood_types){
     // this part calculates the maxes for each blood type so that it can color things in a more
     // meaningful way later on.
     let bloodTypes = ["Apos", "Aneg",
-                    "Bpos", "Bneg",
-                    "ABpos", "ABneg",
-                    "Opos", "Oneg"];
+                      "Bpos", "Bneg",
+                      "ABpos", "ABneg",
+                      "Opos", "Oneg",
+                      "Aboth", "Bboth",
+                      "ABboth", "Oboth"];
 
     var allCountries = data.objects.countries.geometries.filter(obj => {return obj.id});
     allCountries.max = {
-      Apos: -0.1,
-      Aneg: -0.1,
-      Bpos: -0.1,
-      Bneg: -0.1,
-      ABpos: -0.1,
-      ABneg: -0.1,
-      Opos: -0.1,
-      Oneg: -0.1,
+      Apos:   -0.1,
+      Aneg:   -0.1,
+      Bpos:   -0.1,
+      Bneg:   -0.1,
+      ABpos:  -0.1,
+      ABneg:  -0.1,
+      Opos:   -0.1,
+      Oneg:   -0.1,
+      Aboth:  -0.1,
+      Bboth:  -0.1,
+      ABboth: -0.1,
+      Oboth:  -0.1
     };
     for (index = 0; index < allCountries.length; index++) {
       if (allCountries[index]){
@@ -188,6 +202,11 @@ function load_data(error, data, blood_types){
         }
       }
     }
+
+    allCountries.max.Aboth = (allCountries.max.Apos * 1.0) + (allCountries.max.Aneg * 1.0);
+    allCountries.max.Bboth = (allCountries.max.Bpos * 1.0) + (allCountries.max.Bneg * 1.0);
+    allCountries.max.ABboth = (allCountries.max.ABpos * 1.0) + (allCountries.max.ABneg * 1.0);
+    allCountries.max.Oboth = (allCountries.max.Opos * 1.0) + (allCountries.max.Oneg * 1.0);
 
     data.objects.countries.geometries.max = allCountries.max;
     country_data = data;
@@ -243,10 +262,12 @@ svg.append("path")
 }
 
 function changeBloodType(type){
-    var blood_types = ["Apos", "Aneg",
-                        "Bpos", "Bneg",
-                        "ABpos", "ABneg",
-                        "Opos", "Oneg"];
+  let blood_types = ["Apos", "Aneg",
+                    "Bpos", "Bneg",
+                    "ABpos", "ABneg",
+                    "Opos", "Oneg",
+                    "Aboth", "Bboth",
+                    "ABboth", "Oboth"];
 
     d3.selectAll("path")
     .transition()
@@ -269,13 +290,73 @@ function changeBloodType(type){
 
 }
 
+function DisplayMax(){
+  let blood_types = ["Apos", "Aneg",
+                    "Bpos", "Bneg",
+                    "ABpos", "ABneg",
+                    "Opos", "Oneg"];
+    var localmax=-1;
+    var maxtype = -1;
+
+    d3.selectAll("path")
+    .transition()
+    .duration(100)
+    .style("fill", function(d) {
+        let country = country_data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
+        let allCountries = country_data.objects.countries.geometries;
+        if (country[0]){
+            if (country[0].blood_types) {
+              //forloop record local max apply color based on category
+              for (i = 0; i < blood_types.length; i++){
+                if (allCountries[0].blood_types[blood_types[i]]*1.0 > localmax){
+                  localmax = allCountries[0].blood_types[blood_types[i]]*1.0;
+                  maxtype = i;
+                }
+              }
+              console.log(maxtype);
+              switch (maxtype) {
+                case 0:
+                  return d3.color("green");
+                  break;
+                case 1:
+                  return d3.color("green");
+                  break;
+                case 2:
+                  return d3.color("green");
+                  break;
+                case 3:
+                  return d3.color("green");
+                  break;
+                case 4:
+                  return d3.color("green");
+                  break;
+                case 5:
+                  return d3.color("green");
+                  break;
+                case 6:
+                  return d3.color("blue");
+                case 7:
+                  return d3.color("green");
+                }
+              }
+            else {
+                return d3.color("gray");
+            }
+        }
+        else {
+            return d3.color("black");
+        }
+    })
+
+}
+
 function tipStats(country){
     var str = "<strong>" + country.properties.name + ": </strong><br>";
     if (!rh){
-        str += "<strong> A: </strong>" + country.blood_types.Apos + country.blood_types.Aneg + "<br>";
-        str += "<strong> B: </strong>" + country.blood_types.Bpos + country.blood_types.Bneg + "<br>";
-        str += "<strong> AB: </strong>" + country.blood_types.ABpos + country.blood_types.ABneg + "<br>";
-        str += "<strong> O: </strong>" + country.blood_types.Opos + country.blood_types.Oneg + "<br>";
+        str += "<strong> A: </strong>" + country.blood_types.Apos*1.0 + country.blood_types.Aneg*1.0 + "<br>";
+        str += "<strong> B: </strong>" + country.blood_types.Bpos*1.0 + country.blood_types.Bneg*1.0 + "<br>";
+        str += "<strong> AB: </strong>" + country.blood_types.ABpos*1.0 + country.blood_types.ABneg*1.0 + "<br>";
+        str += "<strong> O: </strong>" + country.blood_types.Opos*1.0 + country.blood_types.Oneg*1.0 + "<br>";
     }
     else {
         str += "<strong> A+: </strong>" + country.blood_types.Apos + "<br>";
