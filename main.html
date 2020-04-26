@@ -96,7 +96,7 @@
 <button onclick="changeBloodType(9)">B</button>
 <button onclick="changeBloodType(10)">AB</button>
 <button onclick="changeBloodType(11)">O</button>
-<button onclick="DisplayMax()">MAX</button>
+<button onclick="DisplayMax()">Largest Pop</button>
 <script>
 
 var rh = false; // by default, rh values are preferred not to be shown
@@ -319,27 +319,27 @@ function DisplayMax(){
               console.log( maxtype);
               switch (maxtype) {
                 case 0:
-                  return d3.color("green");
+                  return d3.color("#1f78b4");
                   break;
                 case 1:
-                  return d3.color("green");
+                  return d3.color("#a6cee3");
                   break;
                 case 2:
-                  return d3.color("green");
+                  return d3.color("#e31a1c");
                   break;
                 case 3:
-                  return d3.color("green");
+                  return d3.color("#fb9a99");
                   break;
                 case 4:
-                  return d3.color("green");
+                  return d3.color("#6a3d9a");
                   break;
                 case 5:
-                  return d3.color("green");
+                  return d3.color("#cab2d6");
                   break;
                 case 6:
-                  return d3.color("blue");
+                  return d3.color("#b15928");
                 case 7:
-                  return d3.color("green");
+                  return d3.color("#ffff99");
                 }
               }
             else {
