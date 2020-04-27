@@ -197,21 +197,6 @@ function ready(country_data) {
         .enter()
             .append("path")
             .attr("d", path)
-            .style("fill", function(d) {
-                let country = country_data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
-                let allCountries = country_data.objects.countries.geometries;
-                if (country[0]){
-                    if (country[0].blood_types) {
-                        return color((country[0].blood_types["Apos"]*1.0) / (allCountries.max["Apos"]*1.0));
-                    }
-                    else {
-                        return d3.color("gray");
-                    }
-                }
-                else {
-                    return d3.color("black");
-                }
-            })
             .style('stroke', 'white')
             .style('stroke-width', 1.5)
             .style("opacity",0.8)
@@ -244,6 +229,8 @@ function ready(country_data) {
                         .duration(200)
                         .style("opacity", 0);
                 });
+
+changeBloodType(0, "Apos");
 
 svg.append("path")
     .datum(topojson.mesh(topojson.feature(country_data, country_data.objects.countries).features, function(a, b) {return a.id != b.id; }))
