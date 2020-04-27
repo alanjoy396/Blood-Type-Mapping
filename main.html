@@ -59,7 +59,8 @@ Submitted 4/28/20
 <!-- colors! important -->
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
-<!-- <script src="d3-tip.js"></script> -->
+<!-- legend -->
+<script src="https://raw.githubusercontent.com/susielu/d3-legend/master/d3-legend.js"></script>
 
 <!--Align Title Center-->
 <div style="font-family:verdana" style="text-align:left;">
@@ -216,7 +217,7 @@ function ready(country_data) {
                                 .style("opacity", .9);
                             div.html(tipStats(country[0]))
                                 .style("left", (d3.event.pageX) + "px")
-                                .style("top", (d3.event.pageY - 28) + "px");	;
+                                .style("top", (d3.event.pageY - 28) + "px");
                         }
                     }
                 })
@@ -229,6 +230,8 @@ function ready(country_data) {
                         .duration(200)
                         .style("opacity", 0);
                 });
+        svg.select("g")
+            .attr("class")
 
 changeBloodType(0, "Apos");
 
@@ -252,6 +255,8 @@ function changeBloodType(type, buttonName) {
     else {
         rh = true;
     }
+
+    var legend =
 
     d3.selectAll("path")
     .transition()
