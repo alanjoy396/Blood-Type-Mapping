@@ -125,18 +125,18 @@ function load_data(error, data, blood_types){
         var b_types = blood_types.filter(obj=>obj["id"]==thisCountry.id);
         if (b_types[0]){
             thisCountry.blood_types = {
-                Apos: b_types[0]['A+'],
-                Aneg: b_types[0]['A-'],
-                Bpos: b_types[0]['B+'],
-                Bneg: b_types[0]['B-'],
-                ABpos: b_types[0]['AB+'],
-                ABneg: b_types[0]['AB-'],
-                Opos: b_types[0]['O+'],
-                Oneg: b_types[0]['O-'],
-                Aboth: b_types[0]['A+']*1.0+b_types[0]['A-']*1.0,
-                Bboth: b_types[0]['B+']*1.0+b_types[0]['B-']*1.0,
-                ABboth: b_types[0]['B+']*1.0+b_types[0]['AB-']*1.0,
-                Oboth: b_types[0]['O+']*1.0+b_types[0]['O-']*1.0
+                Apos: (b_types[0]['A+']*1.0).toFixed(2),
+                Aneg: (b_types[0]['A-']*1.0).toFixed(2),
+                Bpos: (b_types[0]['B+']*1.0).toFixed(2),
+                Bneg: (b_types[0]['B-']*1.0).toFixed(2),
+                ABpos: (b_types[0]['AB+']*1.0).toFixed(2),
+                ABneg: (b_types[0]['AB-']*1.0).toFixed(2),
+                Opos: (b_types[0]['O+']*1.0).toFixed(2),
+                Oneg: (b_types[0]['O-']*1.0).toFixed(2),
+                Aboth: (b_types[0]['A+']*1.0+b_types[0]['A-']*1.0).toFixed(2),
+                Bboth: (b_types[0]['B+']*1.0+b_types[0]['B-']*1.0).toFixed(2),
+                ABboth: (b_types[0]['B+']*1.0+b_types[0]['AB-']*1.0).toFixed(2),
+                Oboth: (b_types[0]['O+']*1.0+b_types[0]['O-']*1.0).toFixed(2)
             };
         }
     }
