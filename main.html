@@ -30,68 +30,21 @@ Submitted 4/28/20
       opacity: 1;
     }
 
-
     /* Tooltip CSS */
-    .d3-tip {
-        line-height: 1.5;
-        font-weight: 400;
-        font-family:"avenir next", Arial, sans-serif;
-        padding: 6px;
-        background: rgba(0, 0, 0, 0.6);
-        color: #FFA500;
-        border-radius: 1px;
-        pointer-events: none;
-    }
-
-    /* Creates a small triangle extender for the tooltip */
-    .d3-tip:after {
-        box-sizing: border-box;
-        display: inline;
-        font-size: 8px;
-        width: 100%;
-        line-height: 1.5;
-        color: rgba(0, 0, 0, 0.6);
+    div.tooltip {
         position: absolute;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+        padding: 4px;
+        font: 12px sans-serif;
+        background: lightsteelblue;
+        border: 0px;
+        border-radius: 8px;
         pointer-events: none;
     }
-
-    /* Northward tooltips */
-    .d3-tip.n:after {
-        content: "\25BC";
-        margin: -1px 0 0 0;
-        top: 100%;
-        left: 0;
-        text-align: center;
-    }
-
-    /* Eastward tooltips */
-    .d3-tip.e:after {
-        content: "\25C0";
-        margin: -4px 0 0 0;
-        top: 50%;
-        left: -8px;
-    }
-
-    /* Southward tooltips */
-    .d3-tip.s:after {
-        content: "\25B2";
-        margin: 0 0 1px 0;
-        top: -8px;
-        left: 0;
-        text-align: center;
-    }
-
-    /* Westward tooltips */
-    .d3-tip.w:after {
-        content: "\25B6";
-        margin: -4px 0 0 -1px;
-        top: 50%;
-        left: 100%;
-    }
-    .details{
-      color:white;
-    }
-
 </style>
 <body>
 <!-- gotta load d3 -->
@@ -130,18 +83,7 @@ Submitted 4/28/20
 <button class="button" style="background-color: #A9A9A9;" name="Lpop"  onclick="DisplayMax()">Largest Pop</button>
 <script>
 
-var rh = false; // by default, rh values are preferred not to be shown
-
-// var format = d3.format(",");
-
-/*
-var tip = d3.tip()
-            .attr('class', 'd3-tip')
-            .offset([-10, 0])
-            .html(function(d){
-                return tipStats(d);
-            })
-*/
+var rh = true; // by default, rh values are preferred to be shown
 
 var margin = {top: 0, right: 0, bottom: 0, left: 0},
     width = 960 - margin.left - margin.right,
@@ -163,8 +105,10 @@ var projection = d3.geoMercator()
 
 var path = d3.geoPath().projection(projection);
 
-//svg.call(tip);
-
+// Define the div for the tooltip
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 var country_data;
 var q = queue();
@@ -278,12 +222,27 @@ function ready(country_data) {
                         .style("opacity", 1)
                         .style("stroke", "white")
                         .style("stroke-width", 3);
+
+                    let country = country_data.objects.countries.geometries.filter(obj => {return obj.id === d.id});
+                    if (country[0]){
+                        if (country[0].blood_types) {
+                            div.transition()
+                                .duration(200)
+                                .style("opacity", .9);
+                            div.html(tipStats(country[0]))
+                                .style("left", (d3.event.pageX) + "px")
+                                .style("top", (d3.event.pageY - 28) + "px");	;
+                        }
+                    }
                 })
-                .on('mouseout', function(d){
+                .on('mouseout', function(d) {
                     d3.select(this)
                         .style("opacity", 0.8)
                         .style("stroke", "white")
                         .style("stroke-width", 0.3);
+                    div.transition()
+                        .duration(200)
+                        .style("opacity", 0);
                 });
 
 svg.append("path")
@@ -292,13 +251,19 @@ svg.append("path")
     .attr("d", path);
 }
 
-function changeBloodType(type){
+function changeBloodType(type) {
   let blood_types = ["Apos", "Aneg",
                     "Bpos", "Bneg",
                     "ABpos", "ABneg",
                     "Opos", "Oneg",
                     "Aboth", "Bboth",
                     "ABboth", "Oboth"];
+    if (type > 7) {
+        rh = false;
+    }
+    else {
+        rh = true;
+    }
 
     d3.selectAll("path")
     .transition()
@@ -388,22 +353,22 @@ function DisplayMax(){
 function tipStats(country){
     var str = "<strong>" + country.properties.name + ": </strong><br>";
     if (!rh){
-        str += "<strong> A: </strong>" + country.blood_types.Apos*1.0 + country.blood_types.Aneg*1.0 + "<br>";
-        str += "<strong> B: </strong>" + country.blood_types.Bpos*1.0 + country.blood_types.Bneg*1.0 + "<br>";
-        str += "<strong> AB: </strong>" + country.blood_types.ABpos*1.0 + country.blood_types.ABneg*1.0 + "<br>";
-        str += "<strong> O: </strong>" + country.blood_types.Opos*1.0 + country.blood_types.Oneg*1.0 + "<br>";
+        str += "<strong> A: </strong>" + country.blood_types.Aboth*1.0 + "% <br>";
+        str += "<strong> B: </strong>" + country.blood_types.Bboth*1.0 + "% <br>";
+        str += "<strong> AB: </strong>" + country.blood_types.ABboth*1.0 + "% <br>";
+        str += "<strong> O: </strong>" + country.blood_types.Oboth*1.0 + "% <br>";
     }
     else {
-        str += "<strong> A+: </strong>" + country.blood_types.Apos + "<br>";
-        str += "<strong> A-: </strong>" + country.blood_types.Aneg + "<br>";
-        str += "<strong> B+: </strong>" + country.blood_types.Bpos + "<br>";
-        str += "<strong> B-: </strong>" + country.blood_types.Bneg + "<br>";
-        str += "<strong> AB+: </strong>" + country.blood_types.ABpos + "<br>";
-        str += "<strong> AB-: </strong>" + country.blood_types.ABneg + "<br>";
-        str += "<strong> O+: </strong>" + country.blood_types.Opos + "<br>";
-        str += "<strong> O-: </strong>" + country.blood_types.Oneg + "<br>";
+        str += "<strong> A+: </strong>" + country.blood_types.Apos*1.0 + "% <br>";
+        str += "<strong> A-: </strong>" + country.blood_types.Aneg*1.0 + "% <br>";
+        str += "<strong> B+: </strong>" + country.blood_types.Bpos*1.0 + "% <br>";
+        str += "<strong> B-: </strong>" + country.blood_types.Bneg*1.0 + "% <br>";
+        str += "<strong> AB+: </strong>" + country.blood_types.ABpos*1.0 + "% <br>";
+        str += "<strong> AB-: </strong>" + country.blood_types.ABneg*1.0 + "% <br>";
+        str += "<strong> O+: </strong>" + country.blood_types.Opos*1.0 + "% <br>";
+        str += "<strong> O-: </strong>" + country.blood_types.Oneg*1.0 + "% <br>";
     }
-
+    return str;
 }
 
 </script>
