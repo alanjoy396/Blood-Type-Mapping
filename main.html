@@ -1,3 +1,8 @@
+<!--
+Katherine Roughan, Alan Joy
+Interactive Visualization Final
+Submitted 4/28/20
+-->
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
@@ -7,7 +12,7 @@
         stroke-linejoin: round;
     }
     .button {
-      background-color: #4CAF50;
+      background-color: #A9A9A9;
       border: none;
       color: white;
       padding: 15px 25px;
@@ -18,10 +23,26 @@
       border: 1px solid black;
       transition: 0.4s;
       opacity: .9;
-
     }
     .button:hover {
-      background-color: #ffffff;
+      padding: 10px 35px;
+      opacity: 1;
+    }
+
+    .button2 {
+      background-color: #67000d;
+      border: none;
+      color: white;
+      padding: 15px 25px;
+      text-align: center;
+      font-size: 16px;
+      cursor: pointer;
+      float: left;
+      border: 1px solid black;
+      transition: 0.4s;
+      opacity: .9;
+    }
+    .button2:hover {
       padding: 10px 35px;
       opacity: 1;
     }
@@ -112,19 +133,19 @@
 
 <!--that crisp red #67000d-->
 <!-- Buttons to switch blood type -->
-<button class="button" style="background-color: #1f78b4;" onclick="changeBloodType(0)">A+</button>
-<button class="button" style="background-color: #a6cee3;" onclick="changeBloodType(1)">A-</button>
-<button class="button" style="background-color: #e31a1c;" onclick="changeBloodType(2)">B+</button>
-<button class="button" style="background-color: #fb9a99;" onclick="changeBloodType(3)">B-</button>
-<button class="button" style="background-color: #6a3d9a;" onclick="changeBloodType(4)">AB+</button>
-<button class="button" style="background-color: #cab2d6;" onclick="changeBloodType(5)">AB-</button>
-<button class="button" style="background-color: #33a02c;" onclick="changeBloodType(6)">O+</button>
-<button class="button" style="background-color: #b2df8a;" onclick="changeBloodType(7)">O-</button>
-<button class="button" style="background-color: #A9A9A9;" onclick="changeBloodType(8)">A</button>
-<button class="button" style="background-color: #A9A9A9;" onclick="changeBloodType(9)">B</button>
-<button class="button" style="background-color: #A9A9A9;" onclick="changeBloodType(10)">AB</button>
-<button class="button" style="background-color: #A9A9A9;" onclick="changeBloodType(11)">O</button>
-<button class="button" style="background-color: #A9A9A9;" onclick="DisplayMax()">Largest Pop</button>
+<button class="button" style="background-color: #1f78b4;" name="Apos"  onclick="changeBloodType(0)">A+</button>
+<button class="button" style="background-color: #a6cee3;" name="Aneg"  onclick="changeBloodType(1)">A-</button>
+<button class="button" style="background-color: #e31a1c;" name="Bpos"  onclick="changeBloodType(2)">B+</button>
+<button class="button" style="background-color: #fb9a99;" name="Bneg"  onclick="changeBloodType(3)">B-</button>
+<button class="button" style="background-color: #6a3d9a;" name="ABpos" onclick="changeBloodType(4)">AB+</button>
+<button class="button" style="background-color: #cab2d6;" name="ABneg" onclick="changeBloodType(5)">AB-</button>
+<button class="button" style="background-color: #33a02c;" name="Opos"  onclick="changeBloodType(6)">O+</button>
+<button class="button" style="background-color: #b2df8a;" name="Oneg"  onclick="changeBloodType(7)">O-</button>
+<button class="button" style="background-color: #A9A9A9;" name="Aboth" onclick="changeBloodType(8)">A</button>
+<button class="button" style="background-color: #A9A9A9;" name="Bboth" onclick="changeBloodType(9)">B</button>
+<button class="button" style="background-color: #A9A9A9;" name="ABboth"onclick="changeBloodType(10)">AB</button>
+<button class="button" style="background-color: #A9A9A9;" name="Oboth" onclick="changeBloodType(11)">O</button>
+<button class="button" style="background-color: #A9A9A9;" name="Lpop"  onclick="DisplayMax()">Largest Pop</button>
 <script>
 
 var rh = false; // by default, rh values are preferred not to be shown
@@ -296,7 +317,7 @@ function changeBloodType(type){
                     "Opos", "Oneg",
                     "Aboth", "Bboth",
                     "ABboth", "Oboth"];
-
+                    
     d3.selectAll("path")
     .transition()
     .duration(100)
