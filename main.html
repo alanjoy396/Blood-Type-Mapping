@@ -68,18 +68,18 @@ Submitted 4/28/20
 
 <!--that crisp red #67000d-->
 <!-- Buttons to switch blood type -->
-<button class="button" style="background-color: #1f78b4;" name="Apos"  onclick="changeBloodType(0)">A+</button>
-<button class="button" style="background-color: #a6cee3;" name="Aneg"  onclick="changeBloodType(1)">A-</button>
-<button class="button" style="background-color: #e31a1c;" name="Bpos"  onclick="changeBloodType(2)">B+</button>
-<button class="button" style="background-color: #fb9a99;" name="Bneg"  onclick="changeBloodType(3)">B-</button>
-<button class="button" style="background-color: #6a3d9a;" name="ABpos" onclick="changeBloodType(4)">AB+</button>
-<button class="button" style="background-color: #cab2d6;" name="ABneg" onclick="changeBloodType(5)">AB-</button>
-<button class="button" style="background-color: #33a02c;" name="Opos"  onclick="changeBloodType(6)">O+</button>
-<button class="button" style="background-color: #b2df8a;" name="Oneg"  onclick="changeBloodType(7)">O-</button>
-<button class="button" style="background-color: #A9A9A9;" name="Aboth" onclick="changeBloodType(8)">A</button>
-<button class="button" style="background-color: #A9A9A9;" name="Bboth" onclick="changeBloodType(9)">B</button>
-<button class="button" style="background-color: #A9A9A9;" name="ABboth"onclick="changeBloodType(10)">AB</button>
-<button class="button" style="background-color: #A9A9A9;" name="Oboth" onclick="changeBloodType(11)">O</button>
+<button class="button" style="background-color: #1f78b4;" name="Apos"  onclick="changeBloodType(0, name)">A+</button>
+<button class="button" style="background-color: #a6cee3;" name="Aneg"  onclick="changeBloodType(1, name)">A-</button>
+<button class="button" style="background-color: #e31a1c;" name="Bpos"  onclick="changeBloodType(2, name)">B+</button>
+<button class="button" style="background-color: #fb9a99;" name="Bneg"  onclick="changeBloodType(3, name)">B-</button>
+<button class="button" style="background-color: #6a3d9a;" name="ABpos" onclick="changeBloodType(4, name)">AB+</button>
+<button class="button" style="background-color: #cab2d6;" name="ABneg" onclick="changeBloodType(5, name)">AB-</button>
+<button class="button" style="background-color: #33a02c;" name="Opos"  onclick="changeBloodType(6, name)">O+</button>
+<button class="button" style="background-color: #b2df8a;" name="Oneg"  onclick="changeBloodType(7, name)">O-</button>
+<button class="button" style="background-color: #A9A9A9;" name="Aboth" onclick="changeBloodType(8, name)">A</button>
+<button class="button" style="background-color: #A9A9A9;" name="Bboth" onclick="changeBloodType(9, name)">B</button>
+<button class="button" style="background-color: #A9A9A9;" name="ABboth"onclick="changeBloodType(10, name)">AB</button>
+<button class="button" style="background-color: #A9A9A9;" name="Oboth" onclick="changeBloodType(11, name)">O</button>
 <button class="button" style="background-color: #A9A9A9;" name="Lpop"  onclick="DisplayMax()">Largest Pop</button>
 <script>
 
@@ -251,13 +251,14 @@ svg.append("path")
     .attr("d", path);
 }
 
-function changeBloodType(type) {
+function changeBloodType(type, buttonName) {
   let blood_types = ["Apos", "Aneg",
                     "Bpos", "Bneg",
                     "ABpos", "ABneg",
                     "Opos", "Oneg",
                     "Aboth", "Bboth",
                     "ABboth", "Oboth"];
+
     if (type > 7) {
         rh = false;
     }
@@ -283,7 +284,16 @@ function changeBloodType(type) {
             return d3.color("black");
         }
     })
-
+    d3.selectAll("button")
+        .transition()
+        .duration(100)
+        .style("background-color", function(d) {
+                return d3.color("grey");
+            });
+    d3.selectAll("button[name=" + buttonName + "]")
+        .transition()
+        .duration(100)
+        .style("background-color", d3.color("red"))
 }
 
 function DisplayMax(){
@@ -335,8 +345,10 @@ function DisplayMax(){
                   break;
                 case 6:
                   return d3.color("#33a02c");
+                  break;
                 case 7:
                   return d3.color("#b2df8a");
+                  break;
                 }
               }
             else {
