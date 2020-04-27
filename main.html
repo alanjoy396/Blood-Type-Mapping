@@ -60,7 +60,7 @@ Submitted 4/28/20
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 <!-- legend -->
-<script src="https://raw.githubusercontent.com/susielu/d3-legend/master/d3-legend.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
 
 <!--Align Title Center-->
 <div style="font-family:verdana" style="text-align:left;">
@@ -91,6 +91,13 @@ var margin = {top: 0, right: 0, bottom: 0, left: 0},
     height = 600 - margin.top - margin.bottom;
 
 var color = d3.scaleSequential(d3.interpolateReds);
+
+// make and call the legend
+var legendSequential = d3.legendColor()
+    .shapeWidth(45)
+    .cells(10)
+    .orient("horizontal")
+    .scale(color);
 
 var path = d3.geoPath();
 
@@ -179,10 +186,10 @@ function load_data(error, data, blood_types){
       }
     }
 
-    allCountries.max.Aboth = (allCountries.max.Apos * 1.0) + (allCountries.max.Aneg * 1.0);
-    allCountries.max.Bboth = (allCountries.max.Bpos * 1.0) + (allCountries.max.Bneg * 1.0);
-    allCountries.max.ABboth = (allCountries.max.ABpos * 1.0) + (allCountries.max.ABneg * 1.0);
-    allCountries.max.Oboth = (allCountries.max.Opos * 1.0) + (allCountries.max.Oneg * 1.0);
+    allCountries.max.Aboth = ((allCountries.max.Apos * 1.0) + (allCountries.max.Aneg * 1.0)).toFixed(2);
+    allCountries.max.Bboth = ((allCountries.max.Bpos * 1.0) + (allCountries.max.Bneg * 1.0)).toFixed(2);
+    allCountries.max.ABboth = ((allCountries.max.ABpos * 1.0) + (allCountries.max.ABneg * 1.0)).toFixed(2);
+    allCountries.max.Oboth = ((allCountries.max.Opos * 1.0) + (allCountries.max.Oneg * 1.0)).toFixed(2);
 
     data.objects.countries.geometries.max = allCountries.max;
     country_data = data;
@@ -230,15 +237,20 @@ function ready(country_data) {
                         .duration(200)
                         .style("opacity", 0);
                 });
-        svg.select("g")
-            .attr("class")
+        svg.append("g")
+            .attr("class", "legendSequential")
+            .attr("transform", "translate(" + (width / 2) + "," + (height - 40) + ")");
 
-changeBloodType(0, "Apos");
+    changeBloodType(0, "Apos");
 
-svg.append("path")
-    .datum(topojson.mesh(topojson.feature(country_data, country_data.objects.countries).features, function(a, b) {return a.id != b.id; }))
-    .attr("class", "names")
-    .attr("d", path);
+    svg.select(".legendSequential")
+            .call(legendSequential)
+            .style("opacity", 1);
+
+    svg.append("path")
+        .datum(topojson.mesh(topojson.feature(country_data, country_data.objects.countries).features, function(a, b) {return a.id != b.id; }))
+        .attr("class", "names")
+        .attr("d", path);
 }
 
 function changeBloodType(type, buttonName) {
@@ -256,8 +268,6 @@ function changeBloodType(type, buttonName) {
         rh = true;
     }
 
-    var legend =
-
     d3.selectAll("path")
     .transition()
     .duration(100)
@@ -266,7 +276,8 @@ function changeBloodType(type, buttonName) {
         let allCountries = country_data.objects.countries.geometries;
         if (country[0]){
             if (country[0].blood_types) {
-                return color(country[0].blood_types[blood_types[type]] / allCountries.max[blood_types[type]]);
+                var thisMax = country[0].blood_types[blood_types[type]] / allCountries.max[blood_types[type]];
+                return color(thisMax);
             }
             else {
                 return d3.color("gray");
@@ -275,7 +286,22 @@ function changeBloodType(type, buttonName) {
         else {
             return d3.color("black");
         }
-    })
+    });
+
+
+    var legendLabels = [];
+    var step = (country_data.objects.countries.geometries.max[blood_types[type]]) / (9);
+    for (var i = 0; i < 10; i++) {
+      legendLabels.push((0 + (step * i)).toFixed(2));
+    }
+
+    legendSequential.labels(legendLabels);
+
+    svg.select(".legendSequential")
+        .call(legendSequential)
+        .style("opacity", 1);
+
+    // color buttons when you select one
     d3.selectAll("button")
         .transition()
         .duration(100)
@@ -296,6 +322,9 @@ function DisplayMax(){
     var localmax= -1;
     var maxtype = -1;
     rh = true;
+
+    svg.select(".legendSequential")
+        .style("opacity", 0);
 
     d3.selectAll("path")
     .transition()
