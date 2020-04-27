@@ -13,40 +13,22 @@ Submitted 4/28/20
     }
     .button {
       background-color: #A9A9A9;
-      border: none;
-      color: white;
+      border: 1px solid black;
       padding: 15px 25px;
+      float: left;
+      font-family:verdana;
+      color: white;
       text-align: center;
       font-size: 16px;
       cursor: pointer;
-      float: left;
-      border: 1px solid black;
-      transition: 0.4s;
       opacity: .9;
+      transition: 0.4s;
+
     }
     .button:hover {
       padding: 10px 35px;
       opacity: 1;
     }
-
-    .button2 {
-      background-color: #67000d;
-      border: none;
-      color: white;
-      padding: 15px 25px;
-      text-align: center;
-      font-size: 16px;
-      cursor: pointer;
-      float: left;
-      border: 1px solid black;
-      transition: 0.4s;
-      opacity: .9;
-    }
-    .button2:hover {
-      padding: 10px 35px;
-      opacity: 1;
-    }
-
 
 
     /* Tooltip CSS */
@@ -127,7 +109,7 @@ Submitted 4/28/20
 <!-- <script src="d3-tip.js"></script> -->
 
 <!--Align Title Center-->
-<div style="text-align:left;">
+<div style="font-family:verdana" style="text-align:left;">
 <h1>Global Blood Types</h1>
 
 
@@ -317,7 +299,7 @@ function changeBloodType(type){
                     "Opos", "Oneg",
                     "Aboth", "Bboth",
                     "ABboth", "Oboth"];
-                    
+
     d3.selectAll("path")
     .transition()
     .duration(100)
