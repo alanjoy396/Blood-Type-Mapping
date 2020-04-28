@@ -94,7 +94,7 @@ var color = d3.scaleSequential(d3.interpolateReds);
 
 // make and call the legend
 var legendSequential = d3.legendColor()
-    .shapeWidth(50)
+    .shapeWidth(55)
     .cells(10)
     .orient("horizontal")
     .scale(color);
@@ -239,7 +239,7 @@ function ready(country_data) {
                 });
         svg.append("g")
             .attr("class", "legendSequential")
-            .attr("transform", "translate(" + (width / 2 - 45) + "," + (height - 40) + ")");
+            .attr("transform", "translate(" + (width / 2 - 95) + "," + (height - 40) + ")");
 
     changeBloodType(0, "Apos");
 
